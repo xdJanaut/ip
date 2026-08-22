@@ -21,13 +21,25 @@ public class Nexus {
         System.out.print(divider + banner + "\n" + greeting + "\n" + divider);
 
         Scanner scanner = new Scanner(System.in);
+        String[] tasks = new String[100];
+        int taskCount = 0;
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
             if (command.equals("bye")) {
                 System.out.print(divider + farewell + divider);
                 break;
             }
-            System.out.print(divider + command + "\n" + divider);
+            if (command.equals("list")) {
+                System.out.print(divider);
+                for (int index = 0; index < taskCount; index++) {
+                    System.out.println((index + 1) + ". " + tasks[index]);
+                }
+                System.out.print(divider);
+            } else {
+                tasks[taskCount] = command;
+                taskCount++;
+                System.out.print(divider + "added: " + command + "\n" + divider);
+            }
         }
     }
 }

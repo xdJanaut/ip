@@ -27,10 +27,14 @@ public class NexusTest {
                 + "________________________________________\n";
         String expectedOutput = startupOutput
                 + "________________________________________\n"
-                + "list\n"
+                + "added: read book\n"
                 + "________________________________________\n"
                 + "________________________________________\n"
-                + "blah\n"
+                + "added: return book\n"
+                + "________________________________________\n"
+                + "________________________________________\n"
+                + "1. read book\n"
+                + "2. return book\n"
                 + "________________________________________\n"
                 + "________________________________________\n"
                 + "Bye. Hope to see you again soon!\n"
@@ -39,7 +43,8 @@ public class NexusTest {
         ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
         InputStream originalInput = System.in;
         PrintStream originalOutput = System.out;
-        System.setIn(new ByteArrayInputStream("list\nblah\nbye\n".getBytes(StandardCharsets.UTF_8)));
+        System.setIn(new ByteArrayInputStream("read book\nreturn book\nlist\nbye\n"
+                .getBytes(StandardCharsets.UTF_8)));
         System.setOut(new PrintStream(capturedOutput));
         try {
             Nexus.main(new String[0]);
