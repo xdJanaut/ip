@@ -44,8 +44,12 @@ public class NexusTest {
                 + "[T][ ] return book\n"
                 + "________________________________________\n"
                 + "________________________________________\n"
+                + "Noted. I've removed this task:\n"
+                + "[T][ ] return book\n"
+                + "Now you have 1 tasks in the list.\n"
+                + "________________________________________\n"
+                + "________________________________________\n"
                 + "1.[T][ ] read book\n"
-                + "2.[T][ ] return book\n"
                 + "________________________________________\n"
                 + "________________________________________\n"
                 + "Bye. Hope to see you again soon!\n"
@@ -54,7 +58,7 @@ public class NexusTest {
         ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
         InputStream originalInput = System.in;
         PrintStream originalOutput = System.out;
-        System.setIn(new ByteArrayInputStream("todo\ntodo read book\ntodo return book\nmark 2\nunmark 2\nlist\nbye\n"
+        System.setIn(new ByteArrayInputStream("todo\ntodo read book\ntodo return book\nmark 2\nunmark 2\ndelete 2\nlist\nbye\n"
                 .getBytes(StandardCharsets.UTF_8)));
         System.setOut(new PrintStream(capturedOutput));
         try {

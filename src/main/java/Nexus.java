@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -21,8 +23,7 @@ public class Nexus {
         System.out.print(divider + banner + "\n" + greeting + "\n" + divider);
 
         Scanner scanner = new Scanner(System.in);
-        Task[] tasks = new Task[100];
-        int taskCount = 0;
+        List<Task> tasks = new ArrayList<>();
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
             if (command.equals("bye")) {
@@ -31,26 +32,30 @@ public class Nexus {
             }
             if (command.equals("list")) {
                 System.out.print(divider);
-                for (int index = 0; index < taskCount; index++) {
-                    System.out.println((index + 1) + "." + tasks[index]);
+                for (int index = 0; index < tasks.size(); index++) {
+                    System.out.println((index + 1) + "." + tasks.get(index));
                 }
                 System.out.print(divider);
             } else if (command.startsWith("mark ")) {
-                Task task = tasks[Integer.parseInt(command.substring(5)) - 1];
+                Task task = tasks.get(Integer.parseInt(command.substring(5)) - 1);
                 task.markAsDone();
                 System.out.print(divider + "Nice! I've marked this task as done:\n"
                         + task + "\n" + divider);
             } else if (command.startsWith("unmark ")) {
-                Task task = tasks[Integer.parseInt(command.substring(7)) - 1];
+                Task task = tasks.get(Integer.parseInt(command.substring(7)) - 1);
                 task.unmark();
                 System.out.print(divider + "OK, I've marked this task as not done yet:\n"
                         + task + "\n" + divider);
+            } else if (command.startsWith("delete ")) {
+                Task task = tasks.remove(Integer.parseInt(command.substring(7)) - 1);
+                System.out.print(divider + "Noted. I've removed this task:\n" + task + "\n"
+                        + "Now you have " + tasks.size() + " tasks in the list.\n" + divider);
             } else {
                 try {
-                    tasks[taskCount] = createTask(command);
-                    taskCount++;
+                    Task task = createTask(command);
+                    tasks.add(task);
                     System.out.print(divider + "Got it. I've added this task:\n"
-                            + tasks[taskCount - 1] + "\n" + divider);
+                            + task + "\n" + divider);
                 } catch (NexusException exception) {
                     System.out.print(divider + "OOPS!!! " + exception.getMessage() + "\n" + divider);
                 }
