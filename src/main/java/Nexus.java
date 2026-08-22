@@ -21,7 +21,7 @@ public class Nexus {
         System.out.print(divider + banner + "\n" + greeting + "\n" + divider);
 
         Scanner scanner = new Scanner(System.in);
-        String[] tasks = new String[100];
+        Task[] tasks = new Task[100];
         int taskCount = 0;
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
@@ -32,11 +32,21 @@ public class Nexus {
             if (command.equals("list")) {
                 System.out.print(divider);
                 for (int index = 0; index < taskCount; index++) {
-                    System.out.println((index + 1) + ". " + tasks[index]);
+                    System.out.println((index + 1) + "." + tasks[index]);
                 }
                 System.out.print(divider);
+            } else if (command.startsWith("mark ")) {
+                Task task = tasks[Integer.parseInt(command.substring(5)) - 1];
+                task.markAsDone();
+                System.out.print(divider + "Nice! I've marked this task as done:\n"
+                        + task + "\n" + divider);
+            } else if (command.startsWith("unmark ")) {
+                Task task = tasks[Integer.parseInt(command.substring(7)) - 1];
+                task.unmark();
+                System.out.print(divider + "OK, I've marked this task as not done yet:\n"
+                        + task + "\n" + divider);
             } else {
-                tasks[taskCount] = command;
+                tasks[taskCount] = new Task(command);
                 taskCount++;
                 System.out.print(divider + "added: " + command + "\n" + divider);
             }
