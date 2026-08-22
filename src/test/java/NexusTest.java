@@ -11,11 +11,19 @@ public class NexusTest {
      * @param args command-line arguments, which are not used
      */
     public static void main(String[] args) {
-        String expectedBanner = " _   _                      \n"
+        String expectedOutput = "________________________________________\n"
+                + " _   _                      \n"
                 + "| \\ | | _____  ___   _ ___ \n"
                 + "|  \\| |/ _ \\ \\/ / | | / __|\n"
                 + "| |\\  |  __/>  <| |_| \\__ \\\n"
-                + "|_| \\_|\\___/_/\\_\\__,_|___/\n";
+                + "|_| \\_|\\___/_/\\_\\__,_|___/\n"
+                + "\n"
+                + "Hello! I'm Nexus.\n"
+                + "What can I do for you?\n"
+                + "\n"
+                + "________________________________________\n"
+                + "Bye. Hope to see you again soon!\n"
+                + "________________________________________\n";
 
         ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
         PrintStream originalOutput = System.out;
@@ -26,9 +34,9 @@ public class NexusTest {
             System.setOut(originalOutput);
         }
 
-        String actualBanner = capturedOutput.toString();
-        if (!expectedBanner.equals(actualBanner)) {
-            throw new AssertionError("Expected Nexus to print its banner.");
+        String actualOutput = capturedOutput.toString();
+        if (!expectedOutput.equals(actualOutput)) {
+            throw new AssertionError("Expected Nexus to print its complete greeting.");
         }
     }
 }

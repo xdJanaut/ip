@@ -3,7 +3,7 @@
  */
 public class Nexus {
     /**
-     * Prints the Nexus startup banner.
+     * Prints the Nexus startup greeting and exits.
      *
      * @param args command-line arguments, which are not used
      */
@@ -13,6 +13,9 @@ public class Nexus {
                 + "|  \\| |/ _ \\ \\/ / | | / __|\n"
                 + "| |\\  |  __/>  <| |_| \\__ \\\n"
                 + "|_| \\_|\\___/_/\\_\\__,_|___/\n";
-        System.out.print(banner);
+        String divider = "________________________________________\n";
+        String greeting = "Hello! I'm Nexus.\nWhat can I do for you?\n";
+        String farewell = "Bye. Hope to see you again soon!\n";
+        System.out.print(divider + banner + "\n" + greeting + "\n" + divider + farewell + divider);
     }
 }
