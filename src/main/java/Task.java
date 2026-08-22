@@ -2,7 +2,7 @@
  * Represents a task that can be marked as completed.
  */
 public class Task {
-    private final String description;
+    protected final String description;
     private boolean isDone;
 
     /**

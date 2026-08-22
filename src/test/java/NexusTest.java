@@ -27,22 +27,22 @@ public class NexusTest {
                 + "________________________________________\n";
         String expectedOutput = startupOutput
                 + "________________________________________\n"
-                + "added: read book\n"
+                + "Got it. I've added this task:\n[T][ ] read book\n"
                 + "________________________________________\n"
                 + "________________________________________\n"
-                + "added: return book\n"
+                + "Got it. I've added this task:\n[T][ ] return book\n"
                 + "________________________________________\n"
                 + "________________________________________\n"
                 + "Nice! I've marked this task as done:\n"
-                + "[X] return book\n"
+                + "[T][X] return book\n"
                 + "________________________________________\n"
                 + "________________________________________\n"
                 + "OK, I've marked this task as not done yet:\n"
-                + "[ ] return book\n"
+                + "[T][ ] return book\n"
                 + "________________________________________\n"
                 + "________________________________________\n"
-                + "1.[ ] read book\n"
-                + "2.[ ] return book\n"
+                + "1.[T][ ] read book\n"
+                + "2.[T][ ] return book\n"
                 + "________________________________________\n"
                 + "________________________________________\n"
                 + "Bye. Hope to see you again soon!\n"
@@ -51,7 +51,7 @@ public class NexusTest {
         ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
         InputStream originalInput = System.in;
         PrintStream originalOutput = System.out;
-        System.setIn(new ByteArrayInputStream("read book\nreturn book\nmark 2\nunmark 2\nlist\nbye\n"
+        System.setIn(new ByteArrayInputStream("todo read book\ntodo return book\nmark 2\nunmark 2\nlist\nbye\n"
                 .getBytes(StandardCharsets.UTF_8)));
         System.setOut(new PrintStream(capturedOutput));
         try {

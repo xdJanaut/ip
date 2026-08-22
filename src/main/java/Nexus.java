@@ -46,10 +46,27 @@ public class Nexus {
                 System.out.print(divider + "OK, I've marked this task as not done yet:\n"
                         + task + "\n" + divider);
             } else {
-                tasks[taskCount] = new Task(command);
+                tasks[taskCount] = createTask(command);
                 taskCount++;
-                System.out.print(divider + "added: " + command + "\n" + divider);
+                System.out.print(divider + "Got it. I've added this task:\n"
+                        + tasks[taskCount - 1] + "\n" + divider);
             }
         }
+    }
+
+    /** Creates the appropriate task subtype for a task command. */
+    private static Task createTask(String command) {
+        if (command.startsWith("todo ")) {
+            return new Todo(command.substring(5));
+        }
+        if (command.startsWith("deadline ")) {
+            String[] parts = command.substring(9).split(" /by ", 2);
+            return new Deadline(parts[0], parts[1]);
+        }
+        if (command.startsWith("event ")) {
+            String[] parts = command.substring(6).split(" /from | /to ", 3);
+            return new Event(parts[0], parts[1], parts[2]);
+        }
+        return new Todo(command);
     }
 }
