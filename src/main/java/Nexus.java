@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 /**
  * Starts the Nexus chatbot.
  */
@@ -16,6 +18,16 @@ public class Nexus {
         String divider = "________________________________________\n";
         String greeting = "Hello! I'm Nexus.\nWhat can I do for you?\n";
         String farewell = "Bye. Hope to see you again soon!\n";
-        System.out.print(divider + banner + "\n" + greeting + "\n" + divider + farewell + divider);
+        System.out.print(divider + banner + "\n" + greeting + "\n" + divider);
+
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNextLine()) {
+            String command = scanner.nextLine();
+            if (command.equals("bye")) {
+                System.out.print(divider + farewell + divider);
+                break;
+            }
+            System.out.print(divider + command + "\n" + divider);
+        }
     }
 }
