@@ -27,6 +27,9 @@ public class NexusTest {
                 + "________________________________________\n";
         String expectedOutput = startupOutput
                 + "________________________________________\n"
+                + "OOPS!!! The description of a todo cannot be empty.\n"
+                + "________________________________________\n"
+                + "________________________________________\n"
                 + "Got it. I've added this task:\n[T][ ] read book\n"
                 + "________________________________________\n"
                 + "________________________________________\n"
@@ -51,7 +54,7 @@ public class NexusTest {
         ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
         InputStream originalInput = System.in;
         PrintStream originalOutput = System.out;
-        System.setIn(new ByteArrayInputStream("todo read book\ntodo return book\nmark 2\nunmark 2\nlist\nbye\n"
+        System.setIn(new ByteArrayInputStream("todo\ntodo read book\ntodo return book\nmark 2\nunmark 2\nlist\nbye\n"
                 .getBytes(StandardCharsets.UTF_8)));
         System.setOut(new PrintStream(capturedOutput));
         try {
