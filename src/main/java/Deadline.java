@@ -4,12 +4,12 @@ public class Deadline extends Task {
 
     /** Creates a deadline task. @param description the task description @param by the deadline text */
     public Deadline(String description, String by) {
-        super(description);
+        super(description, TaskType.DEADLINE);
         this.by = by;
     }
 
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + by + ")";
+        return super.toString() + " (by: " + by + ")";
     }
 }
