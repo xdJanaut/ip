@@ -5,6 +5,7 @@ import java.util.List;
 
 /** Manages the tasks in the current Nexus session. */
 public class TaskList {
+    /** Tasks maintained in their display order. */
     private final List<Task> tasks;
 
     /** Creates a task list containing the supplied tasks. */

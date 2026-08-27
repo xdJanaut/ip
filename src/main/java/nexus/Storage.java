@@ -8,7 +8,9 @@ import java.util.List;
 
 /** Stores tasks in a text file between Nexus sessions. */
 public class Storage {
+    /** Separator between fields in the persisted text format. */
     private static final String SEPARATOR = " | ";
+    /** File used to preserve task data between sessions. */
     private final Path dataFile;
 
     /** Creates storage that uses the supplied data file. */
