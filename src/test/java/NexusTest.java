@@ -88,6 +88,11 @@ public class NexusTest {
             throw new AssertionError("Expected Nexus to load tasks saved by an earlier run.");
         }
 
+        Deadline deadline = new Deadline("return book", "2019-12-02");
+        if (!deadline.toString().contains("(by: Dec 02 2019)")) {
+            throw new AssertionError("Expected deadlines to display parsed dates readably.");
+        }
+
         try {
             Files.deleteIfExists(dataFile);
             Files.deleteIfExists(dataFile.getParent());
