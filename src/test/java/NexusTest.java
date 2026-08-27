@@ -2,6 +2,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -14,6 +16,14 @@ public class NexusTest {
      * @param args command-line arguments, which are not used
      */
     public static void main(String[] args) {
+        Path dataFile = Path.of("data", "nexus.txt");
+        try {
+            Files.deleteIfExists(dataFile);
+            Files.deleteIfExists(dataFile.getParent());
+        } catch (Exception exception) {
+            throw new AssertionError("Unable to prepare the test data directory.", exception);
+        }
+
         String startupOutput = "________________________________________\n"
                 + " _   _                      \n"
                 + "| \\ | | _____  ___   _ ___ \n"
@@ -72,5 +82,33 @@ public class NexusTest {
         if (!expectedOutput.equals(actualOutput)) {
             throw new AssertionError("Expected Nexus to print its complete greeting.");
         }
+
+        String secondRunOutput = runApp("list\nbye\n");
+        if (!secondRunOutput.contains("1.[T][ ] read book")) {
+            throw new AssertionError("Expected Nexus to load tasks saved by an earlier run.");
+        }
+
+        try {
+            Files.deleteIfExists(dataFile);
+            Files.deleteIfExists(dataFile.getParent());
+        } catch (Exception exception) {
+            throw new AssertionError("Unable to clean up the test data directory.", exception);
+        }
+    }
+
+    /** Runs Nexus with the given user input and returns its output. */
+    private static String runApp(String input) {
+        ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
+        InputStream originalInput = System.in;
+        PrintStream originalOutput = System.out;
+        System.setIn(new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)));
+        System.setOut(new PrintStream(capturedOutput));
+        try {
+            Nexus.main(new String[0]);
+        } finally {
+            System.setIn(originalInput);
+            System.setOut(originalOutput);
+        }
+        return capturedOutput.toString();
     }
 }
