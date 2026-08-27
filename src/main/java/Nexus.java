@@ -1,3 +1,5 @@
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -6,6 +8,7 @@ import java.util.Scanner;
  * Starts the Nexus chatbot.
  */
 public class Nexus {
+    private static final Path DATA_FILE = Path.of("data", "nexus.txt");
     /**
      * Prints the Nexus startup greeting and exits.
      *
@@ -23,7 +26,7 @@ public class Nexus {
         System.out.print(divider + banner + "\n" + greeting + "\n" + divider);
 
         Scanner scanner = new Scanner(System.in);
-        List<Task> tasks = new ArrayList<>();
+        List<Task> tasks = loadTasks();
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
             if (command.equals("bye")) {
@@ -39,21 +42,25 @@ public class Nexus {
             } else if (command.startsWith("mark ")) {
                 Task task = tasks.get(Integer.parseInt(command.substring(5)) - 1);
                 task.markAsDone();
+                saveTasks(tasks);
                 System.out.print(divider + "Nice! I've marked this task as done:\n"
                         + task + "\n" + divider);
             } else if (command.startsWith("unmark ")) {
                 Task task = tasks.get(Integer.parseInt(command.substring(7)) - 1);
                 task.unmark();
+                saveTasks(tasks);
                 System.out.print(divider + "OK, I've marked this task as not done yet:\n"
                         + task + "\n" + divider);
             } else if (command.startsWith("delete ")) {
                 Task task = tasks.remove(Integer.parseInt(command.substring(7)) - 1);
+                saveTasks(tasks);
                 System.out.print(divider + "Noted. I've removed this task:\n" + task + "\n"
                         + "Now you have " + tasks.size() + " tasks in the list.\n" + divider);
             } else {
                 try {
                     Task task = createTask(command);
                     tasks.add(task);
+                    saveTasks(tasks);
                     System.out.print(divider + "Got it. I've added this task:\n"
                             + task + "\n" + divider);
                 } catch (NexusException exception) {
@@ -86,5 +93,21 @@ public class Nexus {
             return new Event(parts[0], parts[1], parts[2]);
         }
         throw new NexusException("I'm sorry, but I don't know what that means :-(");
+    }
+
+    private static List<Task> loadTasks() {
+        try {
+            return new Storage(DATA_FILE).load();
+        } catch (IOException exception) {
+            return new ArrayList<>();
+        }
+    }
+
+    private static void saveTasks(List<Task> tasks) {
+        try {
+            new Storage(DATA_FILE).save(tasks);
+        } catch (IOException exception) {
+            System.out.println("Unable to save tasks: " + exception.getMessage());
+        }
     }
 }

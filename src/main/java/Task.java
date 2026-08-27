@@ -28,6 +28,21 @@ public class Task {
         isDone = false;
     }
 
+    /** Returns whether this task has been completed. */
+    public boolean isDone() {
+        return isDone;
+    }
+
+    /** Returns the text that describes this task. */
+    public String getDescription() {
+        return description;
+    }
+
+    /** Returns the category of this task. */
+    public TaskType getType() {
+        return type;
+    }
+
     /**
      * Returns the display form of this task.
      *
