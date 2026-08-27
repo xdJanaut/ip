@@ -1,3 +1,5 @@
+package nexus;
+
 /**
  * The supported categories of task.
  */

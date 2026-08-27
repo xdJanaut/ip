@@ -6,6 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.charset.StandardCharsets;
 
+import nexus.Deadline;
+import nexus.Nexus;
+
 /**
  * Checks the startup message presented by the Nexus chatbot.
  */

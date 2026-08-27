@@ -1,3 +1,5 @@
+package nexus;
+
 /**
  * Represents invalid input given to Nexus.
  */
