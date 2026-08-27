@@ -1,27 +1,32 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 /** A task with stated start and end times. */
 public class Event extends Task {
-    private final String from;
-    private final String to;
+    private static final DateTimeFormatter DISPLAY_FORMAT = DateTimeFormatter.ofPattern("MMM dd uuuu");
+    private final LocalDate from;
+    private final LocalDate to;
 
     /** Creates an event task. @param description the event description @param from start text @param to end text */
     public Event(String description, String from, String to) {
         super(description, TaskType.EVENT);
-        this.from = from;
-        this.to = to;
+        this.from = LocalDate.parse(from);
+        this.to = LocalDate.parse(to);
     }
 
     /** Returns the event start text. */
     public String getFrom() {
-        return from;
+        return from.toString();
     }
 
     /** Returns the event end text. */
     public String getTo() {
-        return to;
+        return to.toString();
     }
 
     @Override
     public String toString() {
-        return super.toString() + " (from: " + from + " to: " + to + ")";
+        return super.toString() + " (from: " + from.format(DISPLAY_FORMAT)
+                + " to: " + to.format(DISPLAY_FORMAT) + ")";
     }
 }
