@@ -42,6 +42,17 @@ public class Nexus {
                     System.out.println((index + 1) + "." + tasks.get(index + 1));
                 }
                 System.out.print(divider);
+            } else if (command.startsWith("find ")) {
+                String keyword = command.substring(5).toLowerCase();
+                System.out.print(divider + "Here are the matching tasks in your list:\n");
+                int matchNumber = 1;
+                for (Task task : tasks.getTasks()) {
+                    if (task.getDescription().toLowerCase().contains(keyword)) {
+                        System.out.println(matchNumber + "." + task);
+                        matchNumber++;
+                    }
+                }
+                System.out.print(divider);
             } else if (command.startsWith("mark ")) {
                 Task task = tasks.get(Integer.parseInt(command.substring(5)));
                 task.markAsDone();

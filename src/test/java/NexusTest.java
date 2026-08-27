@@ -91,6 +91,11 @@ public class NexusTest {
             throw new AssertionError("Expected Nexus to load tasks saved by an earlier run.");
         }
 
+        String findOutput = runApp("find book\nbye\n");
+        if (!findOutput.contains("Here are the matching tasks in your list:\n1.[T][ ] read book")) {
+            throw new AssertionError("Expected Nexus to list tasks matching a find keyword.");
+        }
+
         Deadline deadline = new Deadline("return book", "2019-12-02");
         if (!deadline.toString().contains("(by: Dec 02 2019)")) {
             throw new AssertionError("Expected deadlines to display parsed dates readably.");
