@@ -1,3 +1,5 @@
+package nexus;
+
 /** Handles Nexus console messages. */
 public class Ui {
     private static final String DIVIDER = "________________________________________\n";

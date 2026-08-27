@@ -1,3 +1,5 @@
+package nexus;
+
 /** Converts user commands into tasks. */
 public class Parser {
     /** Creates the appropriate task subtype for a task command. */
