@@ -4,13 +4,13 @@ package nexus;
 public class Ui {
     private static final String DIVIDER = "________________________________________\n";
 
-    /** Shows an error message using Nexus's standard format. */
-    public void showError(String message) {
-        System.out.print(DIVIDER + "OOPS!!! " + message + "\n" + DIVIDER);
+    /** Shows the startup greeting, including the Nexus banner. */
+    public void showWelcome(String banner, String greeting) {
+        System.out.print(DIVIDER + banner + "\n" + greeting + "\n\n" + DIVIDER);
     }
 
-    /** Shows a task-added message using Nexus's standard format. */
-    public void showAdded(Task task) {
-        System.out.print(DIVIDER + "Got it. I've added this task:\n" + task + "\n" + DIVIDER);
+    /** Shows one response using Nexus's standard console format. */
+    public void showResponse(String response) {
+        System.out.print(DIVIDER + response + "\n" + DIVIDER);
     }
 }
