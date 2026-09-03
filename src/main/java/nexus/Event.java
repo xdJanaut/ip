@@ -12,9 +12,9 @@ public class Event extends Task {
     /**
      * Creates an event task.
      *
-     * @param description the event description
-     * @param from start text
-     * @param to end text
+     * @param description the event description.
+     * @param from start text.
+     * @param to end text.
      */
     public Event(String description, String from, String to) {
         super(description, TaskType.EVENT);

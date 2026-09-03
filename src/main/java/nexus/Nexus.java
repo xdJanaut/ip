@@ -30,7 +30,7 @@ public class Nexus {
     /**
      * Creates Nexus using a specified data file.
      *
-     * @param dataFile file used to persist tasks
+     * @param dataFile file used to persist tasks.
      */
     Nexus(Path dataFile) {
         storage = new Storage(dataFile);
@@ -40,7 +40,7 @@ public class Nexus {
     /**
      * Starts the console interface for Nexus.
      *
-     * @param args command-line arguments, which are not used
+     * @param args command-line arguments, which are not used.
      */
     public static void main(String[] args) {
         Nexus nexus = new Nexus();
@@ -69,7 +69,7 @@ public class Nexus {
     /**
      * Processes one user command and returns Nexus's response.
      *
-     * @param input command entered by the user
+     * @param input command entered by the user.
      * @return a user-facing response
      */
     public String getResponse(String input) {

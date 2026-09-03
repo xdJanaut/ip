@@ -41,7 +41,7 @@ public class MainWindow extends AnchorPane {
     /**
      * Supplies the chatbot engine used to answer user commands.
      *
-     * @param nexus chatbot engine for this window
+     * @param nexus chatbot engine for this window.
      */
     public void setNexus(Nexus nexus) {
         this.nexus = nexus;

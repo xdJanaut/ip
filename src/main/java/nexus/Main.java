@@ -17,7 +17,7 @@ public class Main extends Application {
     /**
      * Loads and displays the main Nexus window.
      *
-     * @param stage primary stage supplied by JavaFX
+     * @param stage primary stage supplied by JavaFX.
      */
     @Override
     public void start(Stage stage) {

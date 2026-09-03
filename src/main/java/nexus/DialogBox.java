@@ -50,8 +50,8 @@ public class DialogBox extends HBox {
     /**
      * Creates a right-aligned dialog for user input.
      *
-     * @param text message to display
-     * @param image image representing the user
+     * @param text message to display.
+     * @param image image representing the user.
      * @return the configured user dialog
      */
     public static DialogBox getUserDialog(String text, Image image) {
@@ -61,8 +61,8 @@ public class DialogBox extends HBox {
     /**
      * Creates a left-aligned dialog for a Nexus response.
      *
-     * @param text message to display
-     * @param image image representing Nexus
+     * @param text message to display.
+     * @param image image representing Nexus.
      * @return the configured Nexus dialog
      */
     public static DialogBox getNexusDialog(String text, Image image) {

@@ -7,7 +7,7 @@ public class Ui {
     /**
      * Joins a variable number of message lines for display.
      *
-     * @param lines lines to join in their display order
+     * @param lines lines to join in their display order.
      * @return the lines separated by newline characters
      */
     public static String formatLines(String... lines) {
