@@ -8,7 +8,12 @@ public class Deadline extends Task {
     private static final DateTimeFormatter DISPLAY_FORMAT = DateTimeFormatter.ofPattern("MMM dd uuuu");
     private final LocalDate by;
 
-    /** Creates a deadline task. @param description the task description @param by the deadline text */
+    /**
+     * Creates a deadline task.
+     *
+     * @param description the task description
+     * @param by the deadline text
+     */
     public Deadline(String description, String by) {
         super(description, TaskType.DEADLINE);
         this.by = LocalDate.parse(by);

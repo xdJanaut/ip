@@ -56,27 +56,27 @@ public class Storage {
 
         Task task;
         switch (parts[0]) {
-        case "T":
-            task = new Todo(parts[2]);
-            break;
-        case "D":
-            if (parts.length != 4) {
+            case "T":
+                task = new Todo(parts[2]);
+                break;
+            case "D":
+                if (parts.length != 4) {
+                    return null;
+                }
+                task = new Deadline(parts[2], parts[3]);
+                break;
+            case "E":
+                if (parts.length != 4) {
+                    return null;
+                }
+                String[] eventTimes = parts[3].split(" \\| ", 2);
+                if (eventTimes.length != 2) {
+                    return null;
+                }
+                task = new Event(parts[2], eventTimes[0], eventTimes[1]);
+                break;
+            default:
                 return null;
-            }
-            task = new Deadline(parts[2], parts[3]);
-            break;
-        case "E":
-            if (parts.length != 4) {
-                return null;
-            }
-            String[] eventTimes = parts[3].split(" \\| ", 2);
-            if (eventTimes.length != 2) {
-                return null;
-            }
-            task = new Event(parts[2], eventTimes[0], eventTimes[1]);
-            break;
-        default:
-            return null;
         }
 
         if (parts[1].equals("1")) {
