@@ -63,7 +63,7 @@ public class Nexus {
      * @return the two-line startup greeting
      */
     public String getGreeting() {
-        return "Hello! I'm Nexus.\nWhat can I do for you?";
+        return Ui.formatLines("Hello! I'm Nexus.", "What can I do for you?");
     }
 
     /**
@@ -116,11 +116,12 @@ public class Nexus {
 
     /** Returns a numbered display of the supplied tasks. */
     private String showTasks(List<Task> tasksToShow, String heading) {
-        StringBuilder response = new StringBuilder(heading);
+        List<String> lines = new ArrayList<>();
+        lines.add(heading);
         for (int index = 0; index < tasksToShow.size(); index++) {
-            response.append('\n').append(index + 1).append('.').append(tasksToShow.get(index));
+            lines.add((index + 1) + "." + tasksToShow.get(index));
         }
-        return response.toString();
+        return Ui.formatLines(lines.toArray(String[]::new));
     }
 
     /** Creates, saves, and describes a new task. */
@@ -128,7 +129,7 @@ public class Nexus {
         Task task = Parser.createTask(input);
         tasks.add(task);
         saveTasks();
-        return "Got it. I've added this task:\n" + task;
+        return Ui.formatLines("Got it. I've added this task:", task.toString());
     }
 
     /** Updates and saves a task's completion state. */
@@ -137,20 +138,20 @@ public class Nexus {
         if (isDone) {
             task.markAsDone();
             saveTasks();
-            return "Nice! I've marked this task as done:\n" + task;
+            return Ui.formatLines("Nice! I've marked this task as done:", task.toString());
         }
 
         task.unmark();
         saveTasks();
-        return "OK, I've marked this task as not done yet:\n" + task;
+        return Ui.formatLines("OK, I've marked this task as not done yet:", task.toString());
     }
 
     /** Deletes, saves, and describes a task. */
     private String deleteTask(String indexText) throws NexusException {
         Task task = tasks.delete(Integer.parseInt(indexText));
         saveTasks();
-        return "Noted. I've removed this task:\n" + task
-                + "\nNow you have " + tasks.size() + " tasks in the list.";
+        return Ui.formatLines("Noted. I've removed this task:", task.toString(),
+                "Now you have " + tasks.size() + " tasks in the list.");
     }
 
     /** Loads saved tasks, using an empty list when reading fails. */
