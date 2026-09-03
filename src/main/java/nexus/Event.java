@@ -9,7 +9,13 @@ public class Event extends Task {
     private final LocalDate from;
     private final LocalDate to;
 
-    /** Creates an event task. @param description the event description @param from start text @param to end text */
+    /**
+     * Creates an event task.
+     *
+     * @param description the event description
+     * @param from start text
+     * @param to end text
+     */
     public Event(String description, String from, String to) {
         super(description, TaskType.EVENT);
         this.from = LocalDate.parse(from);

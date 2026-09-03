@@ -2,9 +2,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.charset.StandardCharsets;
 
 import nexus.Deadline;
 import nexus.Nexus;
@@ -71,8 +71,8 @@ public class NexusTest {
         ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
         InputStream originalInput = System.in;
         PrintStream originalOutput = System.out;
-        System.setIn(new ByteArrayInputStream("todo\ntodo read book\ntodo return book\nmark 2\nunmark 2\ndelete 2\nlist\nbye\n"
-                .getBytes(StandardCharsets.UTF_8)));
+        String commands = "todo\ntodo read book\ntodo return book\nmark 2\nunmark 2\ndelete 2\nlist\nbye\n";
+        System.setIn(new ByteArrayInputStream(commands.getBytes(StandardCharsets.UTF_8)));
         System.setOut(new PrintStream(capturedOutput));
         try {
             Nexus.main(new String[0]);
