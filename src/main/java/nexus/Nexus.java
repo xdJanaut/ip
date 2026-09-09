@@ -74,25 +74,7 @@ public class Nexus {
      */
     public String getResponse(String input) {
         try {
-            if (input.equals("bye")) {
-                return "Bye. Hope to see you again soon!";
-            }
-            if (input.equals("list")) {
-                return showTasks(tasks.getTasks(), "Here are the tasks in your list:");
-            }
-            if (input.startsWith("find ")) {
-                return findTasks(input.substring(5));
-            }
-            if (input.startsWith("mark ")) {
-                return updateTask(input.substring(5), true);
-            }
-            if (input.startsWith("unmark ")) {
-                return updateTask(input.substring(7), false);
-            }
-            if (input.startsWith("delete ")) {
-                return deleteTask(input.substring(7));
-            }
-            return addTask(input);
+            return executeCommand(input);
         } catch (NexusException exception) {
             return "OOPS!!! " + exception.getMessage();
         } catch (DateTimeParseException exception) {
@@ -100,6 +82,29 @@ public class Nexus {
         } catch (NumberFormatException | IndexOutOfBoundsException exception) {
             return "OOPS!!! That task number is invalid.";
         }
+    }
+
+    /** Routes a valid command to the operation that handles it. */
+    private String executeCommand(String input) throws NexusException {
+        if (input.equals("bye")) {
+            return "Bye. Hope to see you again soon!";
+        }
+        if (input.equals("list")) {
+            return showTasks(tasks.getTasks(), "Here are the tasks in your list:");
+        }
+        if (input.startsWith("find ")) {
+            return findTasks(input.substring(5));
+        }
+        if (input.startsWith("mark ")) {
+            return updateTask(input.substring(5), true);
+        }
+        if (input.startsWith("unmark ")) {
+            return updateTask(input.substring(7), false);
+        }
+        if (input.startsWith("delete ")) {
+            return deleteTask(input.substring(7));
+        }
+        return addTask(input);
     }
 
     /** Returns matching tasks with one-based match numbers. */
