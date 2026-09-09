@@ -10,11 +10,13 @@ public class TaskList {
 
     /** Creates a task list containing the supplied tasks. */
     public TaskList(List<Task> tasks) {
+        assert tasks != null : "Initial task collection must not be null";
         this.tasks = new ArrayList<>(tasks);
     }
 
     /** Adds a task to the list. */
     public void add(Task task) {
+        assert task != null : "Task to add must not be null";
         tasks.add(task);
     }
 
