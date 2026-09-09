@@ -104,13 +104,11 @@ public class Nexus {
 
     /** Returns matching tasks with one-based match numbers. */
     private String findTasks(String keyword) {
-        List<Task> matchingTasks = new ArrayList<>();
         String normalizedKeyword = keyword.toLowerCase(Locale.ROOT);
-        for (Task task : tasks.getTasks()) {
-            if (task.getDescription().toLowerCase(Locale.ROOT).contains(normalizedKeyword)) {
-                matchingTasks.add(task);
-            }
-        }
+        List<Task> matchingTasks = tasks.getTasks().stream()
+                .filter(task -> task.getDescription().toLowerCase(Locale.ROOT)
+                        .contains(normalizedKeyword))
+                .toList();
         return showTasks(matchingTasks, "Here are the matching tasks in your list:");
     }
 
