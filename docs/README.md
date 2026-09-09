@@ -40,7 +40,8 @@ Here are your tasks sorted alphabetically:
 - `unmark NUMBER` marks the numbered task as incomplete.
 - `delete NUMBER` removes the numbered task.
 
-Use the number currently shown by `list`, `find`, or `sort`.
+Use the number currently shown by `list` or `sort`. The numbers displayed by
+`find` identify positions within the search results, not the full task list.
 
 ## Exiting Nexus
 
