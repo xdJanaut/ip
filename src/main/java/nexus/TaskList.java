@@ -1,6 +1,7 @@
 package nexus;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /** Manages the tasks in the current Nexus session. */
@@ -28,6 +29,12 @@ public class TaskList {
     /** Removes and returns a task using its one-based display index. */
     public Task delete(int index) {
         return tasks.remove(index - 1);
+    }
+
+    /** Sorts tasks alphabetically by description, ignoring letter case. */
+    public void sortByDescription() {
+        tasks.sort(Comparator.comparing(Task::getDescription,
+                String.CASE_INSENSITIVE_ORDER));
     }
 
     /** Returns the number of tasks in the list. */

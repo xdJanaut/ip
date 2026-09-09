@@ -46,6 +46,26 @@ class NexusTest {
     }
 
     @Test
+    void getResponse_sort_ordersTasksAlphabeticallyAndPersistsOrder() {
+        Path dataFile = temporaryDirectory.resolve("nexus.txt");
+        Nexus nexus = new Nexus(dataFile);
+        nexus.getResponse("todo write report");
+        nexus.getResponse("todo Buy milk");
+        nexus.getResponse("todo attend meeting");
+
+        assertEquals("Here are your tasks sorted alphabetically:\n"
+                        + "1.[T][ ] attend meeting\n"
+                        + "2.[T][ ] Buy milk\n"
+                        + "3.[T][ ] write report",
+                nexus.getResponse("sort"));
+        assertEquals("Here are the tasks in your list:\n"
+                        + "1.[T][ ] attend meeting\n"
+                        + "2.[T][ ] Buy milk\n"
+                        + "3.[T][ ] write report",
+                new Nexus(dataFile).getResponse("list"));
+    }
+
+    @Test
     void getResponse_datedTasksAndUnmark_preservesEveryTaskType() {
         Nexus nexus = new Nexus(temporaryDirectory.resolve("nexus.txt"));
 

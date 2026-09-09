@@ -1,30 +1,48 @@
 # Nexus User Guide
 
-// Update the title above to match the actual product name
+Nexus is a task-management chatbot that keeps track of todos, deadlines, and
+events. Your tasks are saved automatically and restored the next time Nexus
+starts.
 
-// Product screenshot goes here
+## Adding tasks
 
-// Product intro goes here
+- `todo DESCRIPTION` adds a task without a date.
+- `deadline DESCRIPTION /by YYYY-MM-DD` adds a task with a deadline.
+- `event DESCRIPTION /from YYYY-MM-DD /to YYYY-MM-DD` adds an event.
 
-## Adding deadlines
+For example, `deadline submit report /by 2026-09-18` adds a deadline and shows
+the saved task.
 
-// Describe the action and its outcome.
+## Viewing and finding tasks
 
-// Give examples of usage
+- `list` displays every task with its task number.
+- `find KEYWORD` displays tasks whose descriptions contain the keyword. The
+  search is not case-sensitive.
 
-Example: `keyword (optional arguments)`
+## Sorting tasks
 
-// A description of the expected outcome goes here
+Enter `sort` to arrange all tasks alphabetically by description. Capital and
+lowercase letters are treated alike, and the new order is saved automatically.
 
+For example, tasks named `write report`, `Buy milk`, and `attend meeting` are
+shown in this order after sorting:
+
+```text
+Here are your tasks sorted alphabetically:
+1.[T][ ] attend meeting
+2.[T][ ] Buy milk
+3.[T][ ] write report
 ```
-expected output
-```
 
-## Feature ABC
+## Updating tasks
 
-// Feature details
+- `mark NUMBER` marks the numbered task as completed.
+- `unmark NUMBER` marks the numbered task as incomplete.
+- `delete NUMBER` removes the numbered task.
 
+Use the number currently shown by `list`, `find`, or `sort`.
 
-## Feature XYZ
+## Exiting Nexus
 
-// Feature details
+Enter `bye` to end the conversation. Nexus saves changes whenever a command
+modifies the task list.
