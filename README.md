@@ -38,6 +38,7 @@ java -jar build/libs/nexus.jar
 | `unmark NUMBER` | Marks a task as incomplete. |
 | `delete NUMBER` | Deletes a task. |
 | `find KEYWORD` | Finds tasks containing a keyword. |
+| `sort` | Sorts tasks alphabetically by description. |
 | `bye` | Ends the conversation. |
 
 Nexus stores its data in `data/nexus.txt`. The directory and file are created

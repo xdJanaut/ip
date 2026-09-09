@@ -92,6 +92,9 @@ public class Nexus {
         if (input.equals("list")) {
             return showTasks(tasks.getTasks(), "Here are the tasks in your list:");
         }
+        if (input.equals("sort")) {
+            return sortTasks();
+        }
         if (input.startsWith("find ")) {
             return findTasks(input.substring(5));
         }
@@ -115,6 +118,13 @@ public class Nexus {
                         .contains(normalizedKeyword))
                 .toList();
         return showTasks(matchingTasks, "Here are the matching tasks in your list:");
+    }
+
+    /** Sorts tasks alphabetically, saves the new order, and displays it. */
+    private String sortTasks() throws NexusException {
+        tasks.sortByDescription();
+        saveTasks();
+        return showTasks(tasks.getTasks(), "Here are your tasks sorted alphabetically:");
     }
 
     /** Returns a numbered display of the supplied tasks. */
