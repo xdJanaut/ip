@@ -36,6 +36,7 @@ public class MainWindow extends AnchorPane {
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+        dialogContainer.prefWidthProperty().bind(scrollPane.widthProperty().subtract(18.0));
     }
 
     /**
@@ -47,6 +48,7 @@ public class MainWindow extends AnchorPane {
         this.nexus = nexus;
         dialogContainer.getChildren().add(
                 DialogBox.getNexusDialog(nexus.getGreeting(), nexusImage));
+        Platform.runLater(userInput::requestFocus);
     }
 
     /** Adds the user command and Nexus response to the conversation. */
@@ -57,13 +59,13 @@ public class MainWindow extends AnchorPane {
             return;
         }
 
-        String response = nexus.getResponse(input);
+        Response response = nexus.getCommandResponse(input);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getNexusDialog(response, nexusImage));
+                DialogBox.getNexusDialog(response.text(), nexusImage, response.isError()));
         userInput.clear();
 
-        if (input.equals("bye")) {
+        if (response.shouldExit()) {
             PauseTransition exitDelay = new PauseTransition(EXIT_DELAY);
             exitDelay.setOnFinished(event -> Platform.exit());
             exitDelay.play();
