@@ -21,6 +21,7 @@ public class Nexus {
 
     private final Storage storage;
     private final TaskList tasks;
+    private final String startupWarning;
 
     /** Creates Nexus using the default data file. */
     public Nexus() {
@@ -34,7 +35,21 @@ public class Nexus {
      */
     Nexus(Path dataFile) {
         storage = new Storage(dataFile);
-        tasks = new TaskList(loadTasks());
+        LoadResult loadResult;
+        String loadWarning = "";
+        try {
+            loadResult = storage.load();
+            if (loadResult.skippedRecords() > 0) {
+                String recordWord = loadResult.skippedRecords() == 1 ? "record" : "records";
+                loadWarning = "I restored your valid tasks but skipped "
+                        + loadResult.skippedRecords() + " unreadable saved " + recordWord + ".";
+            }
+        } catch (IOException exception) {
+            loadResult = new LoadResult(List.of(), 0);
+            loadWarning = "I couldn't read your saved tasks, so I started with an empty list.";
+        }
+        tasks = new TaskList(loadResult.tasks());
+        startupWarning = loadWarning;
     }
 
     /**
@@ -63,8 +78,13 @@ public class Nexus {
      * @return the two-line startup greeting
      */
     public String getGreeting() {
-        return Ui.formatLines("Hey! I'm Nexus, your calm productivity sidekick.",
-                "What's our next move?");
+        List<String> lines = new ArrayList<>();
+        lines.add("Hey! I'm Nexus, your calm productivity sidekick.");
+        lines.add("What's our next move?");
+        if (!startupWarning.isEmpty()) {
+            lines.add(startupWarning);
+        }
+        return Ui.formatLines(lines.toArray(String[]::new));
     }
 
     /**
@@ -140,8 +160,14 @@ public class Nexus {
 
     /** Sorts tasks alphabetically, saves the new order, and displays it. */
     private String sortTasks() throws NexusException {
+        List<Task> originalOrder = tasks.getTasks();
         tasks.sortByDescription();
-        saveTasks();
+        try {
+            saveTasks();
+        } catch (NexusException exception) {
+            tasks.replaceAll(originalOrder);
+            throw exception;
+        }
         return showTasks(tasks.getTasks(), "Here are your tasks sorted alphabetically:");
     }
 
@@ -159,42 +185,45 @@ public class Nexus {
     private String addTask(String input) throws NexusException {
         Task task = Parser.createTask(input);
         tasks.add(task);
-        saveTasks();
+        try {
+            saveTasks();
+        } catch (NexusException exception) {
+            tasks.delete(tasks.size());
+            throw exception;
+        }
         return Ui.formatLines("Locked in! I've added this task:", task.toString());
     }
 
     /** Updates and saves a task's completion state. */
     private String updateTask(String indexText, boolean isDone) throws NexusException {
         Task task = tasks.get(parseTaskIndex(indexText));
+        boolean wasDone = task.isDone();
         if (isDone) {
             task.markAsDone();
-            saveTasks();
+            saveTasksOrRestore(task, wasDone);
             return Ui.formatLines("Nice progress! I've marked this task as done:",
                     task.toString());
         }
 
         task.unmark();
-        saveTasks();
+        saveTasksOrRestore(task, wasDone);
         return Ui.formatLines("No pressure—I've marked this task as not done yet:",
                 task.toString());
     }
 
     /** Deletes, saves, and describes a task. */
     private String deleteTask(String indexText) throws NexusException {
-        Task task = tasks.delete(parseTaskIndex(indexText));
-        saveTasks();
+        int index = parseTaskIndex(indexText);
+        Task task = tasks.delete(index);
+        try {
+            saveTasks();
+        } catch (NexusException exception) {
+            tasks.insert(index, task);
+            throw exception;
+        }
         String taskWord = tasks.size() == 1 ? "task" : "tasks";
         return Ui.formatLines("Cleared from your path:", task.toString(),
                 "Now you have " + tasks.size() + " " + taskWord + " in the list.");
-    }
-
-    /** Loads saved tasks, using an empty list when reading fails. */
-    private List<Task> loadTasks() {
-        try {
-            return storage.load();
-        } catch (IOException exception) {
-            return new ArrayList<>();
-        }
     }
 
     /** Saves all current tasks or reports the failure as invalid input. */
@@ -202,7 +231,22 @@ public class Nexus {
         try {
             storage.save(tasks.getTasks());
         } catch (IOException exception) {
-            throw new NexusException("Unable to save tasks: " + exception.getMessage());
+            throw new NexusException(
+                    "I couldn't save your tasks. Check that the data folder is writable.");
+        }
+    }
+
+    /** Saves an updated task, restoring its previous completion state on failure. */
+    private void saveTasksOrRestore(Task task, boolean wasDone) throws NexusException {
+        try {
+            saveTasks();
+        } catch (NexusException exception) {
+            if (wasDone) {
+                task.markAsDone();
+            } else {
+                task.unmark();
+            }
+            throw exception;
         }
     }
 

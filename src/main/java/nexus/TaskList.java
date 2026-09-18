@@ -31,6 +31,17 @@ public class TaskList {
         return tasks.remove(index - 1);
     }
 
+    /** Inserts a task at a one-based position. */
+    public void insert(int index, Task task) {
+        tasks.add(index - 1, task);
+    }
+
+    /** Replaces the current task order with the supplied snapshot. */
+    public void replaceAll(List<Task> replacement) {
+        tasks.clear();
+        tasks.addAll(replacement);
+    }
+
     /** Sorts tasks alphabetically by description, ignoring letter case. */
     public void sortByDescription() {
         tasks.sort(Comparator.comparing(Task::getDescription,

@@ -18,20 +18,27 @@ public class Storage {
         this.dataFile = dataFile;
     }
 
-    /** Loads the saved tasks, returning an empty list when no file exists yet. */
-    public List<Task> load() throws IOException {
+    /** Loads valid saved tasks and counts records that could not be restored. */
+    public LoadResult load() throws IOException {
         List<Task> tasks = new ArrayList<>();
         if (!Files.exists(dataFile)) {
-            return tasks;
+            return new LoadResult(tasks, 0);
         }
 
+        int skippedRecords = 0;
         for (String line : Files.readAllLines(dataFile)) {
-            Task task = parseTask(line);
-            if (task != null) {
-                tasks.add(task);
+            try {
+                Task task = parseTask(line);
+                if (task == null) {
+                    skippedRecords++;
+                } else {
+                    tasks.add(task);
+                }
+            } catch (RuntimeException exception) {
+                skippedRecords++;
             }
         }
-        return tasks;
+        return new LoadResult(tasks, skippedRecords);
     }
 
     /** Saves every task to disk. */

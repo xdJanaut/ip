@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
@@ -160,6 +161,51 @@ class NexusTest {
 
         assertTrue(response.isError());
         assertEquals("I couldn't read that date. Please use YYYY-MM-DD.", response.text());
+    }
+
+    @Test
+    void getGreeting_malformedSavedRecord_reportsPartialRecovery() throws Exception {
+        Path dataFile = temporaryDirectory.resolve("nexus.txt");
+        Files.writeString(dataFile, "T | 0 | read book\nbroken record\n");
+
+        Nexus nexus = new Nexus(dataFile);
+
+        assertTrue(nexus.getGreeting().contains(
+                "I restored your valid tasks but skipped 1 unreadable saved record."));
+        assertEquals("Here are the tasks in your list:\n1.[T][ ] read book",
+                nexus.getResponse("list"));
+    }
+
+    @Test
+    void getCommandResponse_dataPathIsDirectory_returnsStorageErrorAndRollsBack()
+            throws Exception {
+        Path directoryPath = Files.createDirectory(temporaryDirectory.resolve("data-target"));
+        Nexus nexus = new Nexus(directoryPath);
+
+        Response response = nexus.getCommandResponse("todo read book");
+
+        assertTrue(response.isError());
+        assertTrue(response.text().contains("couldn't save"));
+        assertEquals("Here are the tasks in your list:", nexus.getResponse("list"));
+    }
+
+    @Test
+    void getCommandResponse_storageFails_rollsBackUpdatesDeletesAndSorting()
+            throws Exception {
+        Path dataFile = temporaryDirectory.resolve("nexus.txt");
+        Nexus nexus = new Nexus(dataFile);
+        nexus.getResponse("todo zebra");
+        nexus.getResponse("todo alpha");
+        Files.delete(dataFile);
+        Files.createDirectory(dataFile);
+
+        assertTrue(nexus.getCommandResponse("mark 1").isError());
+        assertTrue(nexus.getCommandResponse("delete 1").isError());
+        assertTrue(nexus.getCommandResponse("sort").isError());
+
+        assertEquals("Here are the tasks in your list:\n"
+                + "1.[T][ ] zebra\n"
+                + "2.[T][ ] alpha", nexus.getResponse("list"));
     }
 
     @Test
