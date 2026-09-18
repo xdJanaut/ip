@@ -3,6 +3,9 @@
 Nexus is a personal task-management chatbot with a JavaFX interface. It can
 create, update, search, and delete tasks while saving them between sessions.
 
+See the [Nexus User Guide](docs/README.md) for illustrated setup instructions,
+examples, validation rules, and recovery behavior.
+
 ## Requirements
 
 - JDK 25
@@ -22,7 +25,7 @@ Alternatively, launch the application from a terminal:
 To build and run the packaged application:
 
 ```shell
-./gradlew shadowJar
+./gradlew clean shadowJar
 java -jar build/libs/nexus.jar
 ```
 
@@ -42,7 +45,9 @@ java -jar build/libs/nexus.jar
 | `bye` | Ends the conversation. |
 
 Nexus stores its data in `data/nexus.txt`. The directory and file are created
-automatically when a task is saved for the first time.
+automatically when a task is saved for the first time. Valid tasks are recovered
+from partially malformed files, and failed saves are reported without changing
+the in-memory task list.
 
 ## Testing
 
