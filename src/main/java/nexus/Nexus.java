@@ -63,7 +63,8 @@ public class Nexus {
      * @return the two-line startup greeting
      */
     public String getGreeting() {
-        return Ui.formatLines("Hello! I'm Nexus.", "What can I do for you?");
+        return Ui.formatLines("Hey! I'm Nexus, your calm productivity sidekick.",
+                "What's our next move?");
     }
 
     /**
@@ -73,27 +74,44 @@ public class Nexus {
      * @return a user-facing response
      */
     public String getResponse(String input) {
+        return getCommandResponse(input).text();
+    }
+
+    /**
+     * Processes one user command and describes how its response should be presented.
+     *
+     * @param input command entered by the user.
+     * @return response text and presentation metadata
+     */
+    public Response getCommandResponse(String input) {
+        String command = normalizeWhitespace(input);
         try {
-            return executeCommand(input);
+            if (command.isEmpty()) {
+                throw new NexusException("Please enter a command. Type list to see your tasks.");
+            }
+            if (command.equals("bye")) {
+                return Response.exit("You're all set. See you next time!");
+            }
+            return Response.success(executeCommand(command));
         } catch (NexusException exception) {
-            return "OOPS!!! " + exception.getMessage();
+            return Response.error(exception.getMessage());
         } catch (DateTimeParseException exception) {
-            return "OOPS!!! Please use a date in YYYY-MM-DD format.";
+            return Response.error("I couldn't read that date. Please use YYYY-MM-DD.");
         } catch (NumberFormatException | IndexOutOfBoundsException exception) {
-            return "OOPS!!! That task number is invalid.";
+            return Response.error("That task number is invalid.");
         }
     }
 
     /** Routes a valid command to the operation that handles it. */
     private String executeCommand(String input) throws NexusException {
-        if (input.equals("bye")) {
-            return "Bye. Hope to see you again soon!";
-        }
         if (input.equals("list")) {
             return showTasks(tasks.getTasks(), "Here are the tasks in your list:");
         }
         if (input.equals("sort")) {
             return sortTasks();
+        }
+        if (input.equals("find")) {
+            throw new NexusException("Please include a keyword after find.");
         }
         if (input.startsWith("find ")) {
             return findTasks(input.substring(5));
@@ -142,29 +160,32 @@ public class Nexus {
         Task task = Parser.createTask(input);
         tasks.add(task);
         saveTasks();
-        return Ui.formatLines("Got it. I've added this task:", task.toString());
+        return Ui.formatLines("Locked in! I've added this task:", task.toString());
     }
 
     /** Updates and saves a task's completion state. */
     private String updateTask(String indexText, boolean isDone) throws NexusException {
-        Task task = tasks.get(Integer.parseInt(indexText));
+        Task task = tasks.get(parseTaskIndex(indexText));
         if (isDone) {
             task.markAsDone();
             saveTasks();
-            return Ui.formatLines("Nice! I've marked this task as done:", task.toString());
+            return Ui.formatLines("Nice progress! I've marked this task as done:",
+                    task.toString());
         }
 
         task.unmark();
         saveTasks();
-        return Ui.formatLines("OK, I've marked this task as not done yet:", task.toString());
+        return Ui.formatLines("No pressure—I've marked this task as not done yet:",
+                task.toString());
     }
 
     /** Deletes, saves, and describes a task. */
     private String deleteTask(String indexText) throws NexusException {
-        Task task = tasks.delete(Integer.parseInt(indexText));
+        Task task = tasks.delete(parseTaskIndex(indexText));
         saveTasks();
-        return Ui.formatLines("Noted. I've removed this task:", task.toString(),
-                "Now you have " + tasks.size() + " tasks in the list.");
+        String taskWord = tasks.size() == 1 ? "task" : "tasks";
+        return Ui.formatLines("Cleared from your path:", task.toString(),
+                "Now you have " + tasks.size() + " " + taskWord + " in the list.");
     }
 
     /** Loads saved tasks, using an empty list when reading fails. */
@@ -183,5 +204,24 @@ public class Nexus {
         } catch (IOException exception) {
             throw new NexusException("Unable to save tasks: " + exception.getMessage());
         }
+    }
+
+    /** Parses a one-based task number and verifies it refers to an existing task. */
+    private int parseTaskIndex(String indexText) throws NexusException {
+        final int index;
+        try {
+            index = Integer.parseInt(indexText);
+        } catch (NumberFormatException exception) {
+            throw new NexusException("Task numbers must be whole numbers.");
+        }
+        if (index < 1 || index > tasks.size()) {
+            throw new NexusException("Choose a task number from 1 to " + tasks.size() + ".");
+        }
+        return index;
+    }
+
+    /** Trims input and collapses repeated whitespace to a single space. */
+    private String normalizeWhitespace(String text) {
+        return text == null ? "" : text.trim().replaceAll("\\s+", " ");
     }
 }

@@ -20,6 +20,10 @@ public class Event extends Task {
         super(description, TaskType.EVENT);
         this.from = LocalDate.parse(from);
         this.to = LocalDate.parse(to);
+        if (!this.to.isAfter(this.from)) {
+            throw new IllegalArgumentException(
+                    "An event's /to date must be after its /from date.");
+        }
     }
 
     /** Returns the event start text. */
