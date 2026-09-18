@@ -46,6 +46,9 @@ public class Parser {
         }
         if (command.startsWith("event ")) {
             String details = command.substring(6);
+            if (details.startsWith("/from ")) {
+                throw new NexusException("An event needs a description before /from.");
+            }
             if (details.contains(" /from /to ")) {
                 throw new NexusException("An event needs a date after /from.");
             }

@@ -136,4 +136,13 @@ class ParserTest {
         assertEquals("Use exactly one /from and one /to, each followed by a date.",
                 exception.getMessage());
     }
+
+    @Test
+    void createTask_eventWithoutDescription_throwsReadableError() {
+        String command = "event /from 2026-09-18 /to 2026-09-19";
+        NexusException exception = assertThrows(NexusException.class, () -> Parser.createTask(command));
+
+        assertEquals("An event needs a description before /from.",
+                exception.getMessage());
+    }
 }
