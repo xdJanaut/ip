@@ -40,4 +40,19 @@ class StorageTest {
         assertEquals(0, result.tasks().size());
         assertEquals(2, result.skippedRecords());
     }
+
+    @Test
+    void load_invalidStatusesAndFieldCounts_skipsEveryMalformedRecord() throws Exception {
+        Path dataFile = temporaryDirectory.resolve("nexus.txt");
+        Files.writeString(dataFile, "T | 2 | invalid status\n"
+                + "T | true | text status\n"
+                + "T | 0 | too many | fields\n"
+                + "D | 0 | missing date\n"
+                + "E | 0 | missing end | 2026-09-18\n");
+
+        LoadResult result = new Storage(dataFile).load();
+
+        assertEquals(0, result.tasks().size());
+        assertEquals(5, result.skippedRecords());
+    }
 }

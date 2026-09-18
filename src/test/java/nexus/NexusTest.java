@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -35,6 +38,17 @@ class NexusTest {
         assertFalse(response.isError());
         assertTrue(response.shouldExit());
         assertEquals("You're all set. See you next time!", response.text());
+    }
+
+    @Test
+    void runConsole_spacedBye_stopsBeforeLaterCommands() {
+        Nexus nexus = new Nexus(temporaryDirectory.resolve("nexus.txt"));
+        List<String> responses = new ArrayList<>();
+
+        nexus.runConsole(new Scanner(" bye \ntodo after farewell\n"), responses::add);
+
+        assertEquals(List.of("You're all set. See you next time!"), responses);
+        assertEquals("Here are the tasks in your list:", nexus.getResponse("list"));
     }
 
     @Test
@@ -110,7 +124,7 @@ class NexusTest {
 
         assertEquals("The description of a todo cannot be empty.",
                 nexus.getResponse("todo"));
-        assertEquals("Choose a task number from 1 to 0.", nexus.getResponse("mark 1"));
+        assertEquals("Your task list is empty. Add a task first.", nexus.getResponse("mark 1"));
         assertTrue(nexus.getResponse("deadline return book /by tomorrow")
                 .startsWith("I couldn't read that date. Please use YYYY-MM-DD."));
     }
@@ -151,6 +165,22 @@ class NexusTest {
         assertEquals("Choose a task number from 1 to 1.", nexus.getResponse("delete -1"));
         assertEquals("Choose a task number from 1 to 1.", nexus.getResponse("unmark 2"));
         assertEquals("Task numbers must be whole numbers.", nexus.getResponse("mark first"));
+    }
+
+    @Test
+    void getCommandResponse_bareIndexedCommands_requestTaskNumber() {
+        Nexus nexus = new Nexus(temporaryDirectory.resolve("nexus.txt"));
+
+        assertEquals("Please include a task number after mark.", nexus.getResponse("mark"));
+        assertEquals("Please include a task number after unmark.", nexus.getResponse("unmark"));
+        assertEquals("Please include a task number after delete.", nexus.getResponse("delete"));
+    }
+
+    @Test
+    void getCommandResponse_indexCommandOnEmptyList_explainsHowToContinue() {
+        Nexus nexus = new Nexus(temporaryDirectory.resolve("nexus.txt"));
+
+        assertEquals("Your task list is empty. Add a task first.", nexus.getResponse("mark 1"));
     }
 
     @Test

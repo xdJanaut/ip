@@ -11,12 +11,20 @@ public class Parser {
             throw new NexusException("The description of a todo cannot be empty.");
         }
         if (command.startsWith("todo ")) {
-            return new Todo(command.substring(5));
+            String description = command.substring(5);
+            validateDescription(description);
+            return new Todo(description);
+        }
+        if (command.equals("deadline")) {
+            throw new NexusException("A deadline needs a description and /by date.");
         }
         if (command.startsWith("deadline ")) {
             String details = command.substring(9);
             if (details.startsWith("/by ")) {
                 throw new NexusException("A deadline needs a description before /by.");
+            }
+            if (details.endsWith(" /by")) {
+                throw new NexusException("A deadline needs a date after /by.");
             }
             if (countOccurrences(details, " /by ") != 1) {
                 throw new NexusException(
@@ -29,10 +37,21 @@ public class Parser {
             if (parts[1].isBlank()) {
                 throw new NexusException("A deadline needs a date after /by.");
             }
+            validateDescription(parts[0]);
             return new Deadline(parts[0], parts[1]);
+        }
+        if (command.equals("event")) {
+            throw new NexusException(
+                    "An event needs a description, /from date, and /to date.");
         }
         if (command.startsWith("event ")) {
             String details = command.substring(6);
+            if (details.contains(" /from /to ")) {
+                throw new NexusException("An event needs a date after /from.");
+            }
+            if (details.endsWith(" /to")) {
+                throw new NexusException("An event needs a date after /to.");
+            }
             int fromIndex = details.indexOf(" /from ");
             int toIndex = details.indexOf(" /to ");
             boolean hasOneFrom = countOccurrences(details, " /from ") == 1;
@@ -56,6 +75,7 @@ public class Parser {
                 throw new NexusException(
                         "Use /from before /to, with one date after each marker.");
             }
+            validateDescription(description);
             try {
                 return new Event(description, from, to);
             } catch (DateTimeParseException exception) {
@@ -82,5 +102,13 @@ public class Parser {
             nextIndex += marker.length();
         }
         return count;
+    }
+
+    /** Rejects characters that cannot be represented in the saved-data format. */
+    private static void validateDescription(String description) throws NexusException {
+        if (description.contains("|")) {
+            throw new NexusException(
+                    "Descriptions cannot contain | because Nexus uses it to save tasks.");
+        }
     }
 }

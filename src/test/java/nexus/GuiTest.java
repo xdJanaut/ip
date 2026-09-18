@@ -91,6 +91,28 @@ class GuiTest {
     }
 
     @Test
+    void mainWindow_blankCommandAddsErrorWithoutEmptyUserBubble() throws Exception {
+        runOnJavaFxThread(() -> {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));
+            Parent root = loader.load();
+            MainWindow controller = loader.getController();
+            controller.setNexus(new Nexus(temporaryDirectory.resolve("blank-command.txt")));
+            TextField userInput = (TextField) root.lookup("#userInput");
+            Button sendButton = (Button) root.lookup("#sendButton");
+            ScrollPane scrollPane = (ScrollPane) root.lookup("#scrollPane");
+            VBox dialogContainer = (VBox) scrollPane.getContent();
+
+            userInput.setText("   ");
+            sendButton.fire();
+
+            assertEquals(2, dialogContainer.getChildren().size());
+            Node response = dialogContainer.getChildren().get(1);
+            assertTrue(response.getStyleClass().contains("error-dialog"));
+            return null;
+        });
+    }
+
+    @Test
     void mainWindow_widerSceneExpandsConversationArea() throws Exception {
         runOnJavaFxThread(() -> {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));

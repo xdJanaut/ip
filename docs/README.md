@@ -30,7 +30,8 @@ Use a todo for something without a specific date.
 **Example:** `todo read chapter 4`
 
 Nexus ignores extra spaces around and between words, so accidental repeated
-spaces do not create a strangely formatted task. A description is required.
+spaces do not create a strangely formatted task. A description is required and
+cannot contain the `|` character, which Nexus reserves for its saved-data format.
 
 ## Add a deadline
 

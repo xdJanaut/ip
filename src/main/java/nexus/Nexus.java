@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.function.Consumer;
 
 /**
  * Processes commands for the Nexus chatbot.
@@ -63,10 +64,21 @@ public class Nexus {
         ui.showWelcome(BANNER, nexus.getGreeting());
 
         Scanner scanner = new Scanner(System.in);
+        nexus.runConsole(scanner, ui::showResponse);
+    }
+
+    /**
+     * Processes console input until it ends or a response requests exit.
+     *
+     * @param scanner source of user commands.
+     * @param display destination for response text.
+     */
+    void runConsole(Scanner scanner, Consumer<String> display) {
         while (scanner.hasNextLine()) {
             String input = scanner.nextLine();
-            ui.showResponse(nexus.getResponse(input));
-            if (input.equals("bye")) {
+            Response response = getCommandResponse(input);
+            display.accept(response.text());
+            if (response.shouldExit()) {
                 break;
             }
         }
@@ -136,11 +148,20 @@ public class Nexus {
         if (input.startsWith("find ")) {
             return findTasks(input.substring(5));
         }
+        if (input.equals("mark")) {
+            throw new NexusException("Please include a task number after mark.");
+        }
         if (input.startsWith("mark ")) {
             return updateTask(input.substring(5), true);
         }
+        if (input.equals("unmark")) {
+            throw new NexusException("Please include a task number after unmark.");
+        }
         if (input.startsWith("unmark ")) {
             return updateTask(input.substring(7), false);
+        }
+        if (input.equals("delete")) {
+            throw new NexusException("Please include a task number after delete.");
         }
         if (input.startsWith("delete ")) {
             return deleteTask(input.substring(7));
@@ -252,6 +273,9 @@ public class Nexus {
 
     /** Parses a one-based task number and verifies it refers to an existing task. */
     private int parseTaskIndex(String indexText) throws NexusException {
+        if (tasks.size() == 0) {
+            throw new NexusException("Your task list is empty. Add a task first.");
+        }
         final int index;
         try {
             index = Integer.parseInt(indexText);

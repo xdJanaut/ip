@@ -56,14 +56,18 @@ public class Storage {
     }
 
     private Task parseTask(String line) {
-        String[] parts = line.split(" \\| ", 4);
-        if (parts.length < 3) {
+        String[] parts = line.split(" \\| ", -1);
+        if (parts.length < 3 || (!parts[1].equals("0") && !parts[1].equals("1"))
+                || parts[2].isBlank()) {
             return null;
         }
 
         Task task;
         switch (parts[0]) {
             case "T":
+                if (parts.length != 3) {
+                    return null;
+                }
                 task = new Todo(parts[2]);
                 break;
             case "D":
@@ -73,14 +77,10 @@ public class Storage {
                 task = new Deadline(parts[2], parts[3]);
                 break;
             case "E":
-                if (parts.length != 4) {
+                if (parts.length != 5) {
                     return null;
                 }
-                String[] eventTimes = parts[3].split(" \\| ", 2);
-                if (eventTimes.length != 2) {
-                    return null;
-                }
-                task = new Event(parts[2], eventTimes[0], eventTimes[1]);
+                task = new Event(parts[2], parts[3], parts[4]);
                 break;
             default:
                 return null;

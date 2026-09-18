@@ -55,11 +55,13 @@ public class MainWindow extends AnchorPane {
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
+        Response response = nexus.getCommandResponse(input);
         if (input.isBlank()) {
+            dialogContainer.getChildren().add(
+                    DialogBox.getNexusDialog(response.text(), nexusImage, true));
+            userInput.clear();
             return;
         }
-
-        Response response = nexus.getCommandResponse(input);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
                 DialogBox.getNexusDialog(response.text(), nexusImage, response.isError()));
